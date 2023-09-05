@@ -2,31 +2,33 @@
 #include <stdlib.h>
 
 /**
- * word_count - Counts the number of words in a string.
+ * count_words - Counts the number of words in a string.
  * @str: The input string.
  *
  * Return: The number of words.
  */
-int word_count(char *str)
+int count_words(char *str)
 {
     int count = 0;
-    int in_word = 0;
 
     while (*str != '\0')
     {
         if (*str == ' ' || *str == '\t' || *str == '\n')
         {
-            in_word = 0;
+            /* This character is a space, tab, or newline. */
         }
-        else if (in_word == 0)
+        else
         {
-            in_word = 1;
+            /* This character is part of a word. */
             count++;
+            while (*str != ' ' && *str != '\t' && *str != '\n' && *str != '\0')
+                str++;
+            str--; /* Move back to the last character of the word. */
         }
         str++;
     }
 
-    return (count);
+    return count;
 }
 
 /**
@@ -38,23 +40,22 @@ int word_count(char *str)
 char **strtow(char *str)
 {
     char **words;
-    int i, j, len, word_count;
-    int in_word = 0;
+    int i, j, len, num_words;
 
     if (str == NULL || *str == '\0')
-        return (NULL);
+        return NULL;
 
-    word_count = word_count(str);
+    num_words = count_words(str);
 
-    if (word_count == 0)
-        return (NULL);
+    if (num_words == 0)
+        return NULL;
 
-    words = malloc((word_count + 1) * sizeof(char *));
-    
+    words = malloc((num_words + 1) * sizeof(char *));
+
     if (words == NULL)
-        return (NULL);
+        return NULL;
 
-    for (i = 0; i < word_count; i++)
+    for (i = 0; i < num_words; i++)
     {
         while (*str == ' ' || *str == '\t' || *str == '\n')
             str++;
@@ -70,7 +71,7 @@ char **strtow(char *str)
             for (j = 0; j < i; j++)
                 free(words[j]);
             free(words);
-            return (NULL);
+            return NULL;
         }
 
         for (j = 0; j < len; j++)
@@ -81,5 +82,5 @@ char **strtow(char *str)
 
     words[i] = NULL;
 
-    return (words);
+    return words;
 }
