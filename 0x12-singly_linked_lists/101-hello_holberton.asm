@@ -4,7 +4,7 @@ section .data
 section .text
 	global main
 
-extern printf
+extern printf, exit
 
 main:
 	push rbp
@@ -12,4 +12,6 @@ main:
 	call printf
 	add rsp, 8
 	pop rbp
-	ret
+	mov rax, 60       ; sys_exit
+	xor rdi, rdi      ; exit status 0
+	syscall
